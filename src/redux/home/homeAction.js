@@ -14,10 +14,10 @@ export const fetchCurrencyRequest = () => {
     }
 }
 
-export const fetchCurrencySuccess = users => {
+export const fetchCurrencySuccess = data => {
     return {
         type: FETCH_CURRENCY_SUCCESS,
-        payload: users
+        payload: data
     }
 }
 
@@ -30,6 +30,8 @@ export const fetchCurrencyFailure = error => {
 
 
 export function getCurrency(base) {
+    console.log('https://api.exchangeratesapi.io/latest?base=' + base)
+
     return (dispatch) => {
         dispatch(fetchCurrencyRequest())
         Axios

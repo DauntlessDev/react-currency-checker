@@ -1,6 +1,8 @@
-import { FETCH_CURRENCY_REQUEST,
+import {
+    FETCH_CURRENCY_REQUEST,
     FETCH_CURRENCY_SUCCESS,
-    FETCH_CURRENCY_FAILURE } from "./homeTypes"
+    FETCH_CURRENCY_FAILURE
+} from "./homeTypes"
 
 const initialState = {
     loading: false,
