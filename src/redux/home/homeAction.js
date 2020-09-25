@@ -17,7 +17,8 @@ export const fetchCurrencyRequest = () => {
 export const fetchCurrencySuccess = data => {
     return {
         type: FETCH_CURRENCY_SUCCESS,
-        payload: data
+        payload: data,
+        rates: [data.base, ...Object.keys(data.rates)]
     }
 }
 
@@ -29,16 +30,15 @@ export const fetchCurrencyFailure = error => {
 }
 
 
-export function getCurrency() {
+export function getSpecificCurrency(base) {
 
     return (dispatch) => {
         dispatch(fetchCurrencyRequest())
         Axios
-            .get('https://api.exchangeratesapi.io/latest')
+            .get('https://api.exchangeratesapi.io/latest?base=' + base)
             .then(response => {
                 const data = response.data
-                console.log([data.base, ...Object.keys(data.rates)])
-                dispatch(fetchCurrencySuccess([data.base, ...Object.keys(data.rates)]))
+                dispatch(fetchCurrencySuccess(data))
             })
             .catch(error => {
                 dispatch(fetchCurrencyFailure(error.message))

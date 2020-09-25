@@ -1,73 +1,73 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { getCurrency } from '../../redux';
-import CurrencyRow from './parts/CurrencyRow';
+import { getSpecificCurrency } from '../../redux';
+
 
 function Home() {
     const currentState = useSelector(state => state.home)
     const dispatch = useDispatch()
-    const [fromCurrency, setFromCurrency] = useState()
-    const [toCurrency, setToCurrency] = useState()
+    const [fromCurrency, setFromCurrency] = useState('USD')
+    const [toCurrency, setToCurrency] = useState('USD')
 
-    const [fromAmount, setFromAmount] = useState(1)
-    const [toAmount, setToAmount] = useState(1)
-    const [exchangeRate, setExchangeRate] = useState()
-    const [amount, setAmount] = useState(1)
-    const [amountInFromCurrency, setAmountInFromCurrency] = useState(true)
+    const [exchangeRate, setExchangeRate] = useState(1)
+    const [amount, setAmount] = useState(0)
 
     useEffect(() => {
-
-        setToCurrency(currentState.data[0])
-        setFromCurrency(currentState.data[2])
-
-        if (amountInFromCurrency) {
-            setFromAmount(amount)
-            setToAmount(amount * exchangeRate)
-        } else {
-            setFromAmount(amount / exchangeRate)
-            setToAmount(amount)
-        }
-    }, [currentState])
-
-
-    useEffect(() => {
-        console.log('curreent data', currentState.data)
-        dispatch(getCurrency())
+        dispatch(getSpecificCurrency('USD'))
     }, [])
+
+    useEffect(() => {
+        dispatch(getSpecificCurrency(fromCurrency))
+        setToCurrency(fromCurrency)
+    }, [fromCurrency])
+
+    useEffect(() => {
+        try {
+            setExchangeRate(currentState.data.rates[toCurrency])
+            console.log('rates', exchangeRate)
+            console.log('real rate', currentState.data.rates[toCurrency])
+            console.log('amount', amount)
+            console.log('from', fromCurrency)
+            console.log('to', toCurrency)
+        } catch {
+            console.log('rates', exchangeRate)
+            console.log('amount', amount)
+            console.log('from', fromCurrency)
+            console.log('to', toCurrency)
+        }
+    }, [toCurrency, fromCurrency])
 
     const handleFromAmountChange = (e) => {
         e.preventDefault()
         setAmount(e.target.value)
-        setAmountInFromCurrency(true)
     }
-    const handleToAmountChange = (e) => {
-        e.preventDefault()
-        setAmount(e.target.value)
-        setAmountInFromCurrency(false)
-    }
+
+
     return (
         currentState.loading ?
             <div>Loading</div> :
             currentState.error ?
                 <div>{currentState.error}</div> :
-                currentState.data ?
+                currentState.rates ?
                     <>
                         <h1>Convert</h1>
-                        <CurrencyRow
-                            currencyOptions={currentState.data}
-                            selectedCurrency={fromCurrency}
-                            onChangeAmount={handleFromAmountChange}
-                            onChangeCurrency={e => setFromCurrency(e.target.value)}
-                            amount={fromAmount}
-                        />
+                        <div>
+                            <input type="number" className="input" value={amount} onChange={handleFromAmountChange} />
+                            <select value={fromCurrency} onChange={e => setFromCurrency(e.target.value)}>
+                                {currentState.rates.map((option =>
+                                    <option key={option + Math.random(9999)} value={option}>{option}</option>
+                                ))}
+                            </select>
+                        </div>
                         <div className="equals">=</div>
-                        <CurrencyRow
-                            currencyOptions={currentState.data}
-                            selectedCurrency={toCurrency}
-                            onChangeAmount={handleToAmountChange}
-                            onChangeCurrency={e => setToCurrency(e.target.value)}
-                            amount={toAmount} />
-
+                        <div>
+                            <input type="number" className="input" value={amount * exchangeRate} onChange={() => { }} />
+                            <select value={toCurrency} onChange={e => setToCurrency(e.target.value)}>
+                                {currentState.rates.map((option =>
+                                    <option key={option + Math.random(9999)} value={option}>{option}</option>
+                                ))}
+                            </select>
+                        </div>
                     </>
                     : <div>No Data</div>
     )

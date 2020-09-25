@@ -7,14 +7,8 @@ import {
 const initialState = {
     loading: false,
     error: '',
-    data: [],
-    converter: {
-        base: '',
-        result: '',
-        amount: 1,
-        exchangeRate: 1,
-        amountInFromCurrency: true,
-    },
+    data: {},
+    rates: [],
 }
 
 const homeReducer = (state = initialState, action) => {
@@ -29,6 +23,7 @@ const homeReducer = (state = initialState, action) => {
                 ...state,
                 loading: false,
                 data: action.payload,
+                rates: action.rates,
                 error: ''
             }
         case FETCH_CURRENCY_FAILURE:
