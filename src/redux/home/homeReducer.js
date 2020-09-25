@@ -1,13 +1,20 @@
 import {
     FETCH_CURRENCY_REQUEST,
     FETCH_CURRENCY_SUCCESS,
-    FETCH_CURRENCY_FAILURE
+    FETCH_CURRENCY_FAILURE,
 } from "./homeTypes"
 
 const initialState = {
     loading: false,
     error: '',
-    data: {}
+    data: [],
+    converter: {
+        base: '',
+        result: '',
+        amount: 1,
+        exchangeRate: 1,
+        amountInFromCurrency: true,
+    },
 }
 
 const homeReducer = (state = initialState, action) => {
@@ -19,12 +26,14 @@ const homeReducer = (state = initialState, action) => {
             }
         case FETCH_CURRENCY_SUCCESS:
             return {
+                ...state,
                 loading: false,
                 data: action.payload,
                 error: ''
             }
         case FETCH_CURRENCY_FAILURE:
             return {
+                ...state,
                 loading: false,
                 data: [],
                 error: action.payload

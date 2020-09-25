@@ -2,7 +2,7 @@ import Axios from "axios"
 import {
     FETCH_CURRENCY_REQUEST,
     FETCH_CURRENCY_SUCCESS,
-    FETCH_CURRENCY_FAILURE
+    FETCH_CURRENCY_FAILURE,
 } from "./homeTypes"
 
 
@@ -29,16 +29,16 @@ export const fetchCurrencyFailure = error => {
 }
 
 
-export function getCurrency(base) {
-    console.log('https://api.exchangeratesapi.io/latest?base=' + base)
+export function getCurrency() {
 
     return (dispatch) => {
         dispatch(fetchCurrencyRequest())
         Axios
-            .get('https://api.exchangeratesapi.io/latest?base=' + base)
+            .get('https://api.exchangeratesapi.io/latest')
             .then(response => {
                 const data = response.data
-                dispatch(fetchCurrencySuccess(data))
+                console.log([data.base, ...Object.keys(data.rates)])
+                dispatch(fetchCurrencySuccess([data.base, ...Object.keys(data.rates)]))
             })
             .catch(error => {
                 dispatch(fetchCurrencyFailure(error.message))
