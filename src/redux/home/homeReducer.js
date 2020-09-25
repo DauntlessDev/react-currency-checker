@@ -30,7 +30,7 @@ const homeReducer = (state = initialState, action) => {
             return {
                 ...state,
                 loading: false,
-                data: [],
+                data: {},
                 error: action.payload
             }
         default: return state

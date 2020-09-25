@@ -8,34 +8,32 @@ function Home() {
     const dispatch = useDispatch()
     const [fromCurrency, setFromCurrency] = useState('USD')
     const [toCurrency, setToCurrency] = useState('USD')
-
     const [exchangeRate, setExchangeRate] = useState(1)
     const [amount, setAmount] = useState(0)
 
     useEffect(() => {
-        dispatch(getSpecificCurrency('USD'))
+        setAmount(0)
+        setToCurrency('USD')
+        setFromCurrency('USD')
+        dispatch(getSpecificCurrency(fromCurrency))
     }, [])
 
     useEffect(() => {
         dispatch(getSpecificCurrency(fromCurrency))
-        setToCurrency(fromCurrency)
-    }, [fromCurrency])
+        setAmount(1)
+        setToCurrency('n')
+        setExchangeRate(1)
+
+    }, [fromCurrency, dispatch])
 
     useEffect(() => {
         try {
-            setExchangeRate(currentState.data.rates[toCurrency])
-            console.log('rates', exchangeRate)
-            console.log('real rate', currentState.data.rates[toCurrency])
-            console.log('amount', amount)
-            console.log('from', fromCurrency)
-            console.log('to', toCurrency)
+            if (currentState.data.rates)
+                setExchangeRate(currentState.data.rates[toCurrency])
         } catch {
-            console.log('rates', exchangeRate)
-            console.log('amount', amount)
-            console.log('from', fromCurrency)
-            console.log('to', toCurrency)
+            console.log('no currency selected')
         }
-    }, [toCurrency, fromCurrency])
+    }, [currentState.data.rates, toCurrency])
 
     const handleFromAmountChange = (e) => {
         e.preventDefault()
